@@ -2,6 +2,19 @@ import cv2
 import numpy as np
 from random import randint
 
+## TODO
+'''
+ переписать физику ,привязав движение к векторным вычислениям
+ a^2 + b^2 - 2a*b*cos(alpha)
+
+Движение происходит через сумму векторов X Y, соответственно, угол между нмими всегда 90 град
+cos(90) = 0
+
+значит, используем
+a^2 + b^2
+
+Не используем, для расширения нужно сталкивать вектор движения с другим
+'''
 class Ball:
     def __init__ (self,  x, y, r, clr):
         #self.cnv = cnv
@@ -11,7 +24,7 @@ class Ball:
         self.clr = clr
         self.vx = randint(-20,20)
         self.vy = randint(-20,20)
-
+        
         if self.vx > 0:
             self.vecX = 1
         else:
@@ -24,6 +37,7 @@ class Ball:
             
         #print(self.vx, self.vy)
         self.back_clr = (1,1,1)
+    def getVecLen(self, a, b, ):
         
     def draw(self, cnv):
         cv2.circle( cnv, (self.x,self.y), self.r, self.clr, -1 )
