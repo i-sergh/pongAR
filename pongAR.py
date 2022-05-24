@@ -1,7 +1,6 @@
 import cv2
 from random import randint
 import ball
-import igrok
 
 
 cap = cv2.VideoCapture(0)
