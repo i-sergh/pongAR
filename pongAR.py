@@ -46,17 +46,18 @@ while True:
     frame_HSV = cv2.cvtColor( frame_,
                               cv2.COLOR_BGR2HSV )
 
-    clr_low = ( 0, 100 ,80)
-    clr_high = (15, 255, 255)
+    clr_low, clr_high = ( 0, 100 ,80), (15, 255, 255)
+    clr_low1, clr_high1=( 50, 140 ,0), (80, 255, 255)
 
     frame_clr = cv2.inRange( frame_HSV,clr_low,clr_high)
     conts = findContour (frame_clr, frame)
 
-    
+    frame_clr1 = cv2.inRange( frame_HSV,clr_low1,clr_high1)
+    conts1 = findContour (frame_clr1, frame)
   
 
         
-    mrB.move(frame, [conts])
+    mrB.move(frame, [[conts], [conts1]])
     
     
 

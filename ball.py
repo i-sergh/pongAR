@@ -37,7 +37,7 @@ class Ball:
             
         #print(self.vx, self.vy)
         self.back_clr = (1,1,1)
-    def getVecLen(self, a, b, ):
+    #def getVecLen(self, a, b, ):
         
     def draw(self, cnv):
         cv2.circle( cnv, (self.x,self.y), self.r, self.clr, -1 )
@@ -106,8 +106,8 @@ class Ball:
             self.bounceY()
             if abs(self.vy) > 2:
                self.vy  = int(self.vy*0.9)
-
-        self.collisionContourCheck(conts)
+        for cont in conts:
+            self.collisionContourCheck(cont)
         # Dx Dy
         self.x += self.vx
         self.y += self.vy
