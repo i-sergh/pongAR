@@ -15,20 +15,26 @@ class Player:
     def findMyself(self):
         pass
 
-
+    def testDraiw(self):
+        
+        cv2.circle( self.cnv, (300,300), 50, (0,255,0), 2 )
 
 if __name__ == '__main__':
-    cnv = np.ones( (600, 600, 3), dtype=np.uint8() )
-
+    cap = cv2.VideoCapture(0)
+    
+    cnv = np.ones( (480, 640, 3), dtype=np.uint8() )
+    
     player = Player((0,200,0), cnv)
     
     ball = Ball( 300+ randint(0,100), 300+ randint(0,100), 50, (0,255,255))
-
+    
     while True:
-        cnv *= 0
+        tr, cnv[:,:,:] = cap.read()
+        
+        player.testDraiw()
         
         cv2.imshow('main', cnv)
-            
+        
         key = cv2.waitKey(1)
         if key == 27:
             break
