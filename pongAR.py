@@ -1,16 +1,22 @@
 import cv2
+import numpy as np
 from random import randint
 import ball
 
 
 cap = cv2.VideoCapture(0)
 
-cap.set(3,1920) # Установление длины окна
-cap.set(4,1080)  # Ширина окна
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
 
+cap.set(3,WINDOW_WIDTH) # Установление длины окна
+cap.set(4,WINDOW_HEIGHT )  # Ширина окна
 
-mrB = ball.Ball(320+ randint(0,100), 240+ randint(0,100), 50, (0,255,255))
+#tr, frame = cap.read()
+#print(frame.shape)
+cnv = np.zeros( (WINDOW_HEIGHT, WINDOW_WIDTH, 3 ), dtype=np.uint8() )
+mrB = ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
 
 
 def findContour (mask, out):
@@ -39,7 +45,7 @@ def findContour (mask, out):
 
     
 while True:
-    
+    cnv *=0
     tr, frame = cap.read()
     frame = cv2.flip(frame, 2)
     frame_ = cv2.blur( frame, (30, 30) )
@@ -47,7 +53,7 @@ while True:
                               cv2.COLOR_BGR2HSV )
 
     clr_low, clr_high = ( 0, 100 ,80), (15, 255, 255)
-    clr_low1, clr_high1=( 50, 140 ,0), (80, 255, 255)
+    clr_low1, clr_high1=( 30, 140 ,0), (80, 255, 255)
 
     frame_clr = cv2.inRange( frame_HSV,clr_low,clr_high)
     conts = findContour (frame_clr, frame)
@@ -57,10 +63,13 @@ while True:
   
 
         
-    mrB.move(frame, [[conts], [conts1]])
+    mrB.move( [[conts], [conts1]])
     
     
-
+    cv2.imshow('balls', cnv)
+    # склейка слоев с мячем и с кадром
+    frame = np.where( cnv[:,:]>np.array((0,0,0), dtype=np.uint8()),
+                      cnv, frame)
     
     cv2.imshow('mask', frame_clr)    
     cv2.imshow('main', frame )
@@ -68,6 +77,9 @@ while True:
     
     if key == 27:
         break
+    if key == 32:
+        mrB = ball.Ball(320+ randint(0,100), 240+ randint(0,100), 50, (0,255,255))
+
     if key == ord('w'):
         mrB.giveVelocity(2, 0)
     if key == ord('s'):

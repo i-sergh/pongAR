@@ -16,7 +16,7 @@ a^2 + b^2
 Не используем, для расширения нужно сталкивать вектор движения с другим
 '''
 class Ball:
-    def __init__ (self,  x, y, r, clr):
+    def __init__ (self, cnv, x, y, r, clr):
         #self.cnv = cnv
         self.x = x
         self.y = y
@@ -24,7 +24,7 @@ class Ball:
         self.clr = clr
         self.vx = randint(-20,20)
         self.vy = randint(-20,20)
-        
+        self.cnv = cnv
         if self.vx > 0:
             self.vecX = 1
         else:
@@ -36,17 +36,17 @@ class Ball:
             self.vecY = -1
             
         #print(self.vx, self.vy)
-        self.back_clr = (1,1,1)
+        self.back_clr = (0,0,0)
     #def getVecLen(self, a, b, ):
         
-    def draw(self, cnv):
-        cv2.circle( cnv, (self.x,self.y), self.r, self.clr, -1 )
-        cv2.circle( cnv, ( self.x + self.vx + self.r *  self.vecX,
+    def draw(self ):#cnv):
+        cv2.circle( self.cnv, (self.x,self.y), self.r, self.clr, -1 )
+        cv2.circle( self.cnv, ( self.x + self.vx + self.r *  self.vecX,
                                     self.y + self.vy + self.r *  self.vecY ),
                     3, (0,0,255), -1 )
         
-    def destroy(self,cnv):
-        cv2.circle( cnv, (self.x,self.y), self.r, self.back_clr, -1 )
+    def destroy(self): #,cnv):
+        cv2.circle( self.cnv, (self.x,self.y), self.r, self.back_clr, -1 )
 
     def bounceX (self):
         self.vx *= -1
@@ -54,6 +54,7 @@ class Ball:
     def bounceY(self):
         self.vy *= -1
         self.vecY *= -1
+    
 
     def collisionContourCheck(self, conts):
        
@@ -75,14 +76,14 @@ class Ball:
             pass
 
         
-    def move(self,cnv, conts=[] ):
+    def move(self, conts=[] ):
         
-        self.destroy(cnv)
+        self.destroy()
 
         # X-es
 
         # right border
-        if self.x + self.vx + self.r  > cnv.shape[1]:
+        if self.x + self.vx + self.r  > self.cnv.shape[1]:
             self.bounceX()
             
             if abs(self.vx) > 2:
@@ -97,7 +98,7 @@ class Ball:
         # Y-es
         
         #  down border
-        if self.y + self.vy + self.r  > cnv.shape[0]:
+        if self.y + self.vy + self.r  > self.cnv.shape[0]:
             self.bounceY()
             if abs(self.vy) > 2:
                self.vy  = int(self.vy*0.9)
@@ -112,12 +113,40 @@ class Ball:
         self.x += self.vx
         self.y += self.vy
 
-        self.draw(cnv)
+        self.draw()
         
     def giveVelocity(self, vx, vy):
         self.vx += vx
         self.vy += vy
-        
+
+    def set_X(self, X):
+        self.x = X
+    def set_Y(self, Y):
+        self.y = Y
+    def set_R(self, R):
+        self.r = R
+    def set_color(self, color):
+        self.clr = color
+    def random_start (self, X=None, Y=None, R=None, color=None ):
+        if R == None:
+            self.r = randint(10, 75)
+        else:
+            self.r = R
+            
+        if X == None:
+            self.x = randint(0 + self.r, self.cnv.shape[1] - self.r)
+        else:
+            self.x = X
+            
+        if Y == None:
+            self.y = randint(0 + self.r, self.cnv.shape[0] - self.r)
+        else:
+            self.y = Y
+
+        if color == None:
+            self.clr = (randint(0,255), randint(0,255), randint(0,255))
+        else:
+            self.clr = color
 if __name__ == '__main__':
     cnv = np.ones( (600, 600, 3), dtype=np.uint8() )
 
