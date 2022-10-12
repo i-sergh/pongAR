@@ -9,6 +9,7 @@ cap = cv2.VideoCapture(0)
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
+SHOW_CONTOURS = True
 
 cap.set(3,WINDOW_WIDTH) # Установление длины окна
 cap.set(4,WINDOW_HEIGHT )  # Ширина окна
@@ -16,8 +17,9 @@ cap.set(4,WINDOW_HEIGHT )  # Ширина окна
 #tr, frame = cap.read()
 #print(frame.shape)
 cnv = np.zeros( (WINDOW_HEIGHT, WINDOW_WIDTH, 3 ), dtype=np.uint8() )
-mrB = ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
-
+mrB =[
+    ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
+]
 
 def findContour (mask, out):
     cont, h = cv2.findContours( mask, cv2.RETR_TREE,
@@ -46,24 +48,27 @@ def findContour (mask, out):
     
 while True:
     cnv *=0
+    conts = []
+    conts1 = []
     tr, frame = cap.read()
     frame = cv2.flip(frame, 2)
     frame_ = cv2.blur( frame, (30, 30) )
     frame_HSV = cv2.cvtColor( frame_,
                               cv2.COLOR_BGR2HSV )
 
-    clr_low, clr_high = ( 0, 100 ,80), (15, 255, 255)
-    clr_low1, clr_high1=( 30, 140 ,0), (80, 255, 255)
+    if SHOW_CONTOURS:
+        clr_low, clr_high = ( 0, 100 ,80), (15, 255, 255)
+        clr_low1, clr_high1=( 30, 130 ,0), (110, 255, 255)
 
-    frame_clr = cv2.inRange( frame_HSV,clr_low,clr_high)
-    conts = findContour (frame_clr, frame)
+        frame_clr = cv2.inRange( frame_HSV,clr_low,clr_high)
+        conts = findContour (frame_clr, frame)
 
-    frame_clr1 = cv2.inRange( frame_HSV,clr_low1,clr_high1)
-    conts1 = findContour (frame_clr1, frame)
+        frame_clr1 = cv2.inRange( frame_HSV,clr_low1,clr_high1)
+        conts1 = findContour (frame_clr1, frame)
   
 
-        
-    mrB.move( [[conts], [conts1]])
+    for b in mrB:    
+        b.move( [[conts], [conts1]])
     
     
     cv2.imshow('balls', cnv)
@@ -78,16 +83,24 @@ while True:
     if key == 27:
         break
     if key == 32:
-        mrB = ball.Ball(320+ randint(0,100), 240+ randint(0,100), 50, (0,255,255))
+        print('here')
+        for b in range(len(mrB)):
+            mrB[b] = ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
 
+    if key == ord('q'):
+        SHOW_CONTOURS = not SHOW_CONTOURS
     if key == ord('w'):
-        mrB.giveVelocity(2, 0)
+        for b in mrB:
+            b.giveVelocity(2, 0)
     if key == ord('s'):
-        mrB.giveVelocity(-2, 0)
+        for b in mrB:
+            b.giveVelocity(-2, 0)
     if key == ord('a'):
-        mrB.giveVelocity(0, -2)
+        for b in mrB:
+            b.giveVelocity(0, -2)
     if key == ord('d'):
-        mrB.giveVelocity(0, 2)
+        for b in mrB:
+            b.giveVelocity(0, 2)
 
 cv2.destroyAllWindows()
 cap.release()

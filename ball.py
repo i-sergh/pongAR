@@ -17,14 +17,14 @@ a^2 + b^2
 '''
 class Ball:
     def __init__ (self, cnv, x, y, r, clr):
-        #self.cnv = cnv
+        self.cnv = cnv
         self.x = x
         self.y = y
         self.r = r
         self.clr = clr
         self.vx = randint(-20,20)
         self.vy = randint(-20,20)
-        self.cnv = cnv
+        self.MAX_VELOCITY = 50
         if self.vx > 0:
             self.vecX = 1
         else:
@@ -35,17 +35,18 @@ class Ball:
         else:
             self.vecY = -1
             
-        #print(self.vx, self.vy)
         self.back_clr = (0,0,0)
-    #def getVecLen(self, a, b, ):
+    
         
-    def draw(self ):#cnv):
+    def draw(self ):
         cv2.circle( self.cnv, (self.x,self.y), self.r, self.clr, -1 )
-        cv2.circle( self.cnv, ( self.x + self.vx + self.r *  self.vecX,
-                                    self.y + self.vy + self.r *  self.vecY ),
+        
+        cv2.circle( self.cnv,
+                    ( self.x + self.vx + self.r *  self.vecX,
+                      self.y + self.vy + self.r *  self.vecY ),
                     3, (0,0,255), -1 )
         
-    def destroy(self): #,cnv):
+    def destroy(self): 
         cv2.circle( self.cnv, (self.x,self.y), self.r, self.back_clr, -1 )
 
     def bounceX (self):
@@ -61,17 +62,22 @@ class Ball:
              
         try:
                 if cv2.pointPolygonTest(conts[0], # контур
-                                                              ( self.x + self.vx + self.r *  self.vecX, #  следующий шаг  X
-                                                              self.y + self.vy + self.r *  self.vecY ), #                                Y
-                                                         True) >= 0: # если в контуре, то происходит отскок                  
+                                       ( self.x + self.vx + self.r *  self.vecX,  #  следующий шаг  X
+                                         self.y + self.vy + self.r *  self.vecY ),#                 Y
+                                        True) >= 0: # если в контуре, то происходит отскок                  
                 #if randint(0,1):
                     self.bounceX ()
                 #else:
                     self.bounceY ()
-                    if abs(self.vx) < 50:
-                       self.vx  = int(self.vx*2)
-                    if abs(self.vy) < 50:
-                       self.vy  = int(self.vy*2)
+                    if abs(self.vx) <= self.MAX_VELOCITY:
+                        self.vx  = int(self.vx*2)
+                    else:
+                        self.vx = self.MAX_VELOCITY
+                        
+                    if abs(self.vy) <= self.MAX_VELOCITY:
+                        self.vy  = int(self.vy*2)
+                    else:
+                        self.vy = self.MAX_VELOCITY
         except:
             pass
 
@@ -121,12 +127,16 @@ class Ball:
 
     def set_X(self, X):
         self.x = X
+        
     def set_Y(self, Y):
         self.y = Y
+        
     def set_R(self, R):
         self.r = R
+        
     def set_color(self, color):
         self.clr = color
+        
     def random_start (self, X=None, Y=None, R=None, color=None ):
         if R == None:
             self.r = randint(10, 75)
@@ -147,6 +157,9 @@ class Ball:
             self.clr = (randint(0,255), randint(0,255), randint(0,255))
         else:
             self.clr = color
+
+
+            
 if __name__ == '__main__':
     cnv = np.ones( (600, 600, 3), dtype=np.uint8() )
 
