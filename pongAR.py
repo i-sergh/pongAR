@@ -26,22 +26,23 @@ def findContour (mask, out):
                                 cv2.CHAIN_APPROX_SIMPLE)
     cont = sorted( cont,key=cv2.contourArea, reverse=True)
     cv2.drawContours( out, cont, 0, (0,255,0), 2 )
-   
+
+    # проверка на пустой список контуров
+    if len(cont) == 0:
+        return []
     
-    try:
-        for count, i in enumerate(cont[0]):
-        #print(i[0][0])
+    for count, i in enumerate(cont[0]):
+        
             
-            if count % 1 == 0:
-                cv2.line(out, (i[0][0], i[0][1]),
+        if count % 1 == 0:
+            cv2.line(out, (i[0][0], i[0][1]),
                           (cont[0][len(cont[0]) - count - 1][0][0],
                            cont[0][len(cont[0]) - count - 1][0][1]),
                     (randint(0,255), randint(0,255), randint(0,255)), 2)
             
-            out[i[0][1], i[0][0], 1] = 255
-        return cont[0]
-    except:
-       return []
+        out[i[0][1], i[0][0], 1] = 255
+    return cont[0]
+    
        
     
 
