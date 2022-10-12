@@ -19,7 +19,7 @@ cap.set(4,WINDOW_HEIGHT )  # Ширина окна
 cnv = np.zeros( (WINDOW_HEIGHT, WINDOW_WIDTH, 3 ), dtype=np.uint8() )
 mrB =[
     ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
-]
+for i in range(10)]
 
 def findContour (mask, out):
     cont, h = cv2.findContours( mask, cv2.RETR_TREE,
@@ -71,7 +71,7 @@ while True:
         b.move( [[conts], [conts1]])
     
     
-    cv2.imshow('balls', cnv)
+    #cv2.imshow('balls', cnv)
     # склейка слоев с мячем и с кадром
     frame = np.where( cnv[:,:]>np.array((0,0,0), dtype=np.uint8()),
                       cnv, frame)
@@ -83,9 +83,9 @@ while True:
     if key == 27:
         break
     if key == 32:
-        print('here')
-        for b in range(len(mrB)):
-            mrB[b] = ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
+        
+        for b in mrB:
+            b.random_restart( 320+ randint(0,100), 240+ randint(0,100), 25 )
 
     if key == ord('q'):
         SHOW_CONTOURS = not SHOW_CONTOURS

@@ -58,32 +58,42 @@ class Ball:
     
 
     def collisionContourCheck(self, conts):
-       
-             
-        try:
-                if cv2.pointPolygonTest(conts[0], # контур
-                                       ( self.x + self.vx + self.r *  self.vecX,  #  следующий шаг  X
-                                         self.y + self.vy + self.r *  self.vecY ),#                 Y
-                                        True) >= 0: # если в контуре, то происходит отскок                  
-                #if randint(0,1):
-                    self.bounceX ()
-                #else:
-                    self.bounceY ()
-                    if abs(self.vx) <= self.MAX_VELOCITY:
-                        self.vx  = int(self.vx*2)
-                    else:
-                        self.vx = self.MAX_VELOCITY
-                        
-                    if abs(self.vy) <= self.MAX_VELOCITY:
-                        self.vy  = int(self.vy*2)
-                    else:
-                        self.vy = self.MAX_VELOCITY
-        except:
-            pass
+        """
+            collisionContourCheck - проверяет коллизию контуров конкретного цвета
+            Если объект касается контура, то объект отскакивает
 
+            conts: [[]] - список контуров cv2 конкретного (одного) цвета
+            
+        """
+        # проверка на пустой список контуров
+        if len(conts[0]) == 0:
+            return 0
+            
+                    
+        if cv2.pointPolygonTest(conts[0], # контур
+                                ( self.x + self.vx + self.r *  self.vecX,  #  следующий шаг  X
+                                 self.y + self.vy + self.r *  self.vecY ),#                 Y
+                                True) >= 0: # если в контуре, то происходит отскок                  
+                #if randint(0,1):
+            self.bounceX ()
+                #else:
+            self.bounceY ()
+            if abs(self.vx) <= self.MAX_VELOCITY:
+                self.vx  = int(self.vx*2)
+            else:
+                self.vx = self.MAX_VELOCITY
+                        
+            if abs(self.vy) <= self.MAX_VELOCITY:
+                self.vy  = int(self.vy*2)
+            else:
+                self.vy = self.MAX_VELOCITY
         
     def move(self, conts=[] ):
-        
+        """
+            move - двигает объект на шаг, равный dx, dy
+
+            conts: [ [[]], [[]] ] - список контуров cv2 различных цветов; conts[i] - список контуров конкретного цвета
+        """
         self.destroy()
 
         # X-es
@@ -113,7 +123,8 @@ class Ball:
             self.bounceY()
             if abs(self.vy) > 2:
                self.vy  = int(self.vy*0.9)
-        for cont in conts:
+        # в conts список из 
+        for cont in conts:    
             self.collisionContourCheck(cont)
         # Dx Dy
         self.x += self.vx
@@ -137,7 +148,7 @@ class Ball:
     def set_color(self, color):
         self.clr = color
         
-    def random_start (self, X=None, Y=None, R=None, color=None ):
+    def random_restart (self, X=None, Y=None, R=None, color=None ):
         if R == None:
             self.r = randint(10, 75)
         else:
