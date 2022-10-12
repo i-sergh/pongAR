@@ -147,7 +147,10 @@ class Ball:
         
     def set_color(self, color):
         self.clr = color
-        
+
+    def set_max_velocity(self, max_velocity):
+        self.MAX_VELOCITY = max_velocity
+      
     def random_restart (self, X=None, Y=None, R=None, color=None ):
         if R == None:
             self.r = randint(10, 75)
