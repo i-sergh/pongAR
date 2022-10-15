@@ -6,9 +6,9 @@ import ball
 
 cap = cv2.VideoCapture(0)
 
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-
+WINDOW_WIDTH = 960
+WINDOW_HEIGHT = 540
+#print(cap.read()[1].shape)
 SHOW_CONTOURS = True
 
 cap.set(3,WINDOW_WIDTH) # Установление длины окна
@@ -18,8 +18,8 @@ cap.set(4,WINDOW_HEIGHT )  # Ширина окна
 #print(frame.shape)
 cnv = np.zeros( (WINDOW_HEIGHT, WINDOW_WIDTH, 3 ), dtype=np.uint8() )
 mrB =[
-    ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (0,255,255))
-for i in range(10)]
+    ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (71,99,255))
+for i in range(4)]
 
 def findContour (mask, out):
     cont, h = cv2.findContours( mask, cv2.RETR_TREE,
@@ -58,8 +58,8 @@ while True:
                               cv2.COLOR_BGR2HSV )
 
     if SHOW_CONTOURS:
-        clr_low, clr_high = ( 0, 100 ,80), (15, 255, 255)
-        clr_low1, clr_high1=( 30, 130 ,0), (110, 255, 255)
+        clr_low, clr_high = ( 0, 150 ,80), (15, 255, 255)
+        clr_low1, clr_high1=( 30, 150, 50), (90, 255, 255)
 
         frame_clr = cv2.inRange( frame_HSV,clr_low,clr_high)
         conts = findContour (frame_clr, frame)
