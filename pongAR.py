@@ -17,9 +17,15 @@ cap.set(4,WINDOW_HEIGHT )  # Ширина окна
 #tr, frame = cap.read()
 #print(frame.shape)
 cnv = np.zeros( (WINDOW_HEIGHT, WINDOW_WIDTH, 3 ), dtype=np.uint8() )
+
+BALLS = 4
+
+bColors = [(randint(0,255), randint(0,255), randint(0,255)) for i in range(BALLS)]
+
 mrB =[
-    ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25, (71,99,255))
-for i in range(4)]
+    ball.Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25,
+               bColors[i] )
+for i in range(BALLS)]
 
 def findContour (mask, out):
     cont, h = cv2.findContours( mask, cv2.RETR_TREE,
@@ -85,8 +91,8 @@ while True:
         break
     if key == 32:
         
-        for b in mrB:
-            b.random_restart( 320+ randint(0,100), 240+ randint(0,100), 25 )
+        for i, b in enumerate(mrB):
+            b.random_restart( 320+ randint(0,100), 240+ randint(0,100), 25, color=bColors[i] )
 
     if key == ord('q'):
         SHOW_CONTOURS = not SHOW_CONTOURS

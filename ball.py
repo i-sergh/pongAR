@@ -150,9 +150,25 @@ class Ball:
 
     def set_max_velocity(self, max_velocity):
         self.MAX_VELOCITY = max_velocity
-      
-    def random_restart (self, X=None, Y=None, R=None, color=None ):
-        if R == None:
+        
+    def set_velocity(self,vx=None, vy=None):
+        if vx == None:
+            self.vx = randint(-20,20)
+        if vy == None:
+            self.vy = randint(-20,20)
+        
+        if self.vx > 0:
+            self.vecX = 1
+        else:
+            self.vecX = -1
+
+        if self.vy > 0:
+            self.vecY = 1
+        else:
+            self.vecY = -1
+    
+    def random_restart (self, X=None, Y=None, R=None, color=None, vx=None, vy=None ):
+        if not R:
             self.r = randint(10, 75)
         else:
             self.r = R
@@ -172,7 +188,7 @@ class Ball:
         else:
             self.clr = color
 
-
+        self.set_velocity(vx, vy)  
             
 if __name__ == '__main__':
     cnv = np.ones( (600, 600, 3), dtype=np.uint8() )
