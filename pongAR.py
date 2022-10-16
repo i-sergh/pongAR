@@ -98,16 +98,16 @@ while True:
         SHOW_CONTOURS = not SHOW_CONTOURS
     if key == ord('w'):
         for b in mrB:
-            b.giveVelocity(2, 0)
+            b.give_velocity(2, 0)
     if key == ord('s'):
         for b in mrB:
-            b.giveVelocity(-2, 0)
+            b.give_velocity(-2, 0)
     if key == ord('a'):
         for b in mrB:
-            b.giveVelocity(0, -2)
+            b.give_velocity(0, -2)
     if key == ord('d'):
         for b in mrB:
-            b.giveVelocity(0, 2)
+            b.give_velocity(0, 2)
 
 cv2.destroyAllWindows()
 cap.release()

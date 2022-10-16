@@ -26,7 +26,8 @@ if __name__ == '__main__':
     
     player = Player((0,200,0), cnv)
     
-    ball = Ball( 300+ randint(0,100), 300+ randint(0,100), 50, (0,255,255))
+    ball = Ball(cnv, 320+ randint(0,100), 240+ randint(0,100), 25,
+               (0,255,255))
     
     while True:
         tr, cnv[:,:,:] = cap.read()

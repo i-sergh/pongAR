@@ -15,6 +15,9 @@ a^2 + b^2
 
 Не используем, для расширения нужно сталкивать вектор движения с другим
 '''
+
+
+
 class Ball:
     def __init__ (self, cnv, x, y, r, clr):
         self.cnv = cnv
@@ -38,14 +41,21 @@ class Ball:
         self.back_clr = (0,0,0)
     
         
-    def draw(self ):
+    def draw(self):
         cv2.circle( self.cnv, (self.x,self.y), self.r, self.clr, -1 )
+
+        self.draw_vec() 
         
+
+    def draw_vec(self):
         cv2.circle( self.cnv,
                     ( self.x + self.vx + self.r *  self.vecX,
                       self.y + self.vy + self.r *  self.vecY ),
                     3, (0,0,255), -1 )
+
         
+        
+            
     def destroy(self): 
         cv2.circle( self.cnv, (self.x,self.y), self.r, self.back_clr, -1 )
 
@@ -55,9 +65,38 @@ class Ball:
     def bounceY(self):
         self.vy *= -1
         self.vecY *= -1
-    
 
-    def collisionContourCheck(self, conts):
+    def next_step_check (self):
+        # X-es
+
+        # right border
+        if self.x + self.vx + self.r  > self.cnv.shape[1]:
+            self.bounceX()
+            
+            if abs(self.vx) > 2:
+               self.vx  = int(self.vx*0.9)
+               
+        # left border
+        if self.x + self.vx - self.r  < 0:
+            self.bounceX()
+            if abs(self.vx) > 2:
+               self.vx  = int(self.vx*0.9)
+
+        # Y-es
+        
+        #  down border
+        if self.y + self.vy + self.r  > self.cnv.shape[0]:
+            self.bounceY()
+            if abs(self.vy) > 2:
+               self.vy  = int(self.vy*0.9)
+        # upper border
+        if self.y + self.vy - self.r  < 0:
+            self.bounceY()
+            if abs(self.vy) > 2:
+               self.vy  = int(self.vy*0.9)
+
+               
+    def collision_contour_check(self, conts):
         """
             collisionContourCheck - проверяет коллизию контуров конкретного цвета
             Если объект касается контура, то объект отскакивает
@@ -96,43 +135,17 @@ class Ball:
         """
         self.destroy()
 
-        # X-es
-
-        # right border
-        if self.x + self.vx + self.r  > self.cnv.shape[1]:
-            self.bounceX()
-            
-            if abs(self.vx) > 2:
-               self.vx  = int(self.vx*0.9)
-               
-        # left border
-        if self.x + self.vx - self.r  < 0:
-            self.bounceX()
-            if abs(self.vx) > 2:
-               self.vx  = int(self.vx*0.9)
-
-        # Y-es
-        
-        #  down border
-        if self.y + self.vy + self.r  > self.cnv.shape[0]:
-            self.bounceY()
-            if abs(self.vy) > 2:
-               self.vy  = int(self.vy*0.9)
-        # upper border
-        if self.y + self.vy - self.r  < 0:
-            self.bounceY()
-            if abs(self.vy) > 2:
-               self.vy  = int(self.vy*0.9)
+        self.next_step_check()
         # в conts список из 
         for cont in conts:    
-            self.collisionContourCheck(cont)
+            self.collision_contour_check(cont)
         # Dx Dy
         self.x += self.vx
         self.y += self.vy
 
         self.draw()
         
-    def giveVelocity(self, vx, vy):
+    def give_velocity(self, vx, vy):
         self.vx += vx
         self.vy += vy
 
@@ -166,8 +179,15 @@ class Ball:
             self.vecY = 1
         else:
             self.vecY = -1
+
+    def set_color(self, color):
+        if color == None:
+            self.clr = (randint(0,255), randint(0,255), randint(0,255))
+        else:
+            self.clr = color
     
     def random_restart (self, X=None, Y=None, R=None, color=None, vx=None, vy=None ):
+        # TODO: Отрефакторить
         if not R:
             self.r = randint(10, 75)
         else:
@@ -182,12 +202,9 @@ class Ball:
             self.y = randint(0 + self.r, self.cnv.shape[0] - self.r)
         else:
             self.y = Y
-
-        if color == None:
-            self.clr = (randint(0,255), randint(0,255), randint(0,255))
-        else:
-            self.clr = color
-
+            
+        self.set_color(color)
+        
         self.set_velocity(vx, vy)  
             
 if __name__ == '__main__':
@@ -204,12 +221,12 @@ if __name__ == '__main__':
         if key == 27:
             break
         if key == ord('w'):
-            ball.giveVelocity(2, 0)
+            ball.give_velocity(2, 0)
         if key == ord('s'):
-            ball.giveVelocity(-2, 0)
+            ball.give_velocity(-2, 0)
         if key == ord('a'):
-            ball.giveVelocity(0, -2)
+            ball.give_velocity(0, -2)
         if key == ord('d'):
-            ball.giveVelocity(0, 2)
+            ball.give_velocity(0, 2)
     
     cv2.destroyAllWindows()
